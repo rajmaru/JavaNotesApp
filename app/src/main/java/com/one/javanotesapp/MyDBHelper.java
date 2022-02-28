@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NavUtils;
 
 class MyDBHelper extends SQLiteOpenHelper {
 
@@ -23,17 +24,10 @@ class MyDBHelper extends SQLiteOpenHelper {
     private static final String ID = "_id";
 
     Context context;
-    Activity activity;
 
     public MyDBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-    }
-
-    public MyDBHelper(Activity activity, @Nullable Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
-        this.activity = activity;
     }
 
     @Override
@@ -79,7 +73,7 @@ class MyDBHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-   void update(String id, String title, String notes){
+   public void update(String id, String title, String notes){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -93,5 +87,15 @@ class MyDBHelper extends SQLiteOpenHelper {
         }else {
             Toast.makeText(context, "Successfully Updated", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void deleteAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME);
+    }
+
+    public Integer delete(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, "_id=?", new String[]{id});
     }
 }
